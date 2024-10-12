@@ -1,26 +1,74 @@
 service: movie-lambda-function
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
 frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs18.x
 
-# you can overwrite defaults here
-#  stage: dev
+  stage: dev
   region: ap-south-1
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:DeleteItem"
+            - "dynamodb:Scan"
+          Resource:
+            - { "Fn::GetAtt": ["MovieMaster", "Arn"] }
 
 
 functions:
-  hello:
-    handler: handler.hello
+  createMovie:
+    handler: src/handlers.createMovie
     events:
-      - http:
-          path: /hello
-          method: get    
-          
+      - httpApi:
+          path: /movie
+          method: post
+  getMovie:
+    handler: src/handlers.getMovie
+    events:
+      - httpApi:
+          path: /movie/{id}
+          method: get
+  updateMovie:
+    handler: src/handlers.updateMovie
+    events:
+      - httpApi:
+          path: /movie/{id}
+          method: put
+  deleteMovie:
+    handler: src/handlers.deleteMovie
+    events:
+      - httpApi:
+          path: /movie/{id}
+          method: delete
+  listMovie:
+    handler: src/handlers.listMovie
+    events:
+      - httpApi:
+          path: /movies
+          method: get
+
+plugins:
+  - serverless-plugin-typescript
+
+resources:
+  Resources:
+    MovieMaster:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: MovieMaster
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
