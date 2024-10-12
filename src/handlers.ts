@@ -178,3 +178,32 @@ export const listMovie = async (event: APIGatewayProxyEvent): Promise<APIGateway
     body: JSON.stringify(output.Items),
   };
 };
+
+export const searchDetails = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  
+  const query_params = event.pathParameters?.queryParams as string;
+  let movieName = query_params.split('=')[1];
+  
+  var params = {    
+    ExpressionAttributeValues: {
+      ":movie_name": movieName
+    },
+    ProjectionExpression: "id, movie_name",    
+    TableName: tableName,
+    FilterExpression: 'movie_name = :movie_name',    
+  };
+  
+  const search_result = await docClient.scan(params, function (err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data);            
+    }
+  }).promise(); 
+
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify(search_result),
+  };
+};
