@@ -1,8 +1,4 @@
-# package directories
+.serverless
 node_modules
-jspm_packages
 .build
 .vscode
-
-# Serverless directories
-.serverless
