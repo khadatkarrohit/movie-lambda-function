@@ -25,3 +25,4 @@ serverless deploy
 - PUT /movie/{uuid} - updates a movie by UUID
 - DELETE /movie/{uuid} - deletes a movie by UUID
 - GET /movies - gets a list of movies
+- GET /searchMovies/{queryParams} - search movie name

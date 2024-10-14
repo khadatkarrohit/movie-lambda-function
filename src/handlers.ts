@@ -7,6 +7,10 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = "MovieMaster";
 const headers = {
   "content-type": "application/json",
+  "Access-Control-Allow-Headers": "*",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "*",
+  "Accepts": '*/*',
 };
 
 const schema = yup.object().shape({  
