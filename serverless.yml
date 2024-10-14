@@ -2,6 +2,13 @@ service: movie-lambda-function
 
 frameworkVersion: "3"
 
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
 provider:
   name: aws
   runtime: nodejs18.x
